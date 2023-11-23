@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <!-- Boxicons CSS -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <title>GitQuizzes - Home</title>
+</head>
+<body class="xl:mx-20 2xl:mx-72 bg-mainGrey text-mainBlack">
+
+    <!-- navbar -->
+    <nav class="bg-secondayColor text-mainGrey relative px-6 py-4 flex justify-between items-center my-4 rounded-3xl">
+        <a class="text-3xl font-bold leading-none" href="/">
+            <h1 class="font-extrabold text-2xl">Git-Quizzes</h1>
+        </a>
+        <div class="lg:hidden">
+            <button class="navbar-burger flex items-center text-mainColor p-3">
+                <svg class="block h-4 w-4 fill-current" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <title>Mobile menu</title>
+                    <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"></path>
+                </svg>
+            </button>
+        </div>
+        <a class="hidden lg:inline-block lg:ml-auto lg:mr-3 py-2 px-6 bg-gray-50 hover:bg-gray-100 text-sm text-mainBlack font-bold  rounded-lg transition duration-200" href="/login">Log In</a>
+        <a class="hidden lg:inline-block py-2 px-6 bg-mainColor hover:bg-mainColor text-sm font-bold text-white rounded-lg transition duration-200" href="/signup">Sign up</a>
+    </nav>
+    <div class="navbar-menu relative z-50 hidden">
+        <div class="navbar-backdrop fixed inset-0 bg-mainBlack opacity-25"></div>
+        <nav class="fixed top-0 left-0 bottom-0 flex flex-col w-5/6 max-w-sm py-6 px-6 bg-white border-r overflow-y-auto">
+            <div class="flex items-center mb-8">
+                <a class="mr-auto text-3xl font-bold leading-none" href="/">
+                    <h1 class="font-extrabold text-2xl">Git-Quizzes</h1>
+                </a>
+                <button class="navbar-close">
+                    <svg class="h-6 w-6 text-gray-400 cursor-pointer hover:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#616f67">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="mt-auto">
+                <div class="pt-6">
+                    <a class="block px-4 py-3 mb-3 leading-loose text-xs text-center font-semibold bg-gray-50 hover:bg-gray-100 rounded-lg" href="/login">Log In</a>
+                    <a class="block px-4 py-3 mb-2 leading-loose text-xs text-center text-white font-semibold bg-mainColor hover:bg-mainColor  rounded-lg" href="/signup">Sign Up</a>
+                </div>
+                <p class="my-4 text-xs text-center text-gray-400">
+                    <span>Copyright © 2023 - GIT Quizzes</span>
+                </p>
+            </div>
+        </nav>
+    </div>
+
+    <!-- info message -->
+    {% with message = get_flashed_messages() %}
+        {% if message %}
+            <!-- Warning -->
+            <div
+            class="bg-yellow-50 border border-yellow-400 rounded text-yellow-800 text-sm p-4 flex justify-between"
+            >
+                <div>
+                    <div class="flex items-center">
+                        <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-4 w-4 mr-2"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        >
+                        <path
+                            fill-rule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                            clip-rule="evenodd"
+                        />
+                        </svg>
+                        <p class="font-semibold text-lg">
+                        <span class="font-bold text-lg">Info:</span>
+                        {{ message | join(" ") }}
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"
+                        />
+                    </svg>
+                </div>
+            </div>
+        {% endif %}
+    {% endwith %}
+    <!-- sign up section -->
+    <section class="bg-gray-50 rounded-3xl my-5 text-center max-h-screen">
+        <div class="p-6 sm:p-12">
+        <h2 class="text-3xl font-semibold mx-auto text-mainColor">Git Quizzes</h2>
+        <div class="mt-12 flex flex-col items-center">
+            <h1 class="text-2xl xl:text-3xl font-extrabold">
+            Sign up for Daily Quizzes
+            </h1>
+            <div class="w-full flex-1 mt-8">
+            <div class="flex flex-col items-center">
+                <button
+                class="w-full max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline"
+                >
+                <div class="bg-white p-2 rounded-full">
+                    <svg class="w-4" viewBox="0 0 533.5 544.3">
+                    <path
+                        d="M533.5 278.4c0-18.5-1.5-37.1-4.7-55.3H272.1v104.8h147c-6.1 33.8-25.7 63.7-54.4 82.7v68h87.7c51.5-47.4 81.1-117.4 81.1-200.2z"
+                        fill="#4285f4"
+                    />
+                    <path
+                        d="M272.1 544.3c73.4 0 135.3-24.1 180.4-65.7l-87.7-68c-24.4 16.6-55.9 26-92.6 26-71 0-131.2-47.9-152.8-112.3H28.9v70.1c46.2 91.9 140.3 149.9 243.2 149.9z"
+                        fill="#34a853"
+                    />
+                    <path
+                        d="M119.3 324.3c-11.4-33.8-11.4-70.4 0-104.2V150H28.9c-38.6 76.9-38.6 167.5 0 244.4l90.4-70.1z"
+                        fill="#fbbc04"
+                    />
+                    <path
+                        d="M272.1 107.7c38.8-.6 76.3 14 104.4 40.8l77.7-77.7C405 24.6 339.7-.8 272.1 0 169.2 0 75.1 58 28.9 150l90.4 70.1c21.5-64.5 81.8-112.4 152.8-112.4z"
+                        fill="#ea4335"
+                    />
+                    </svg>
+                </div>
+                <span class="ml-4">
+                    Sign Up with Google
+                </span>
+                </button>
+            </div>
+
+            <div class="my-12 border-b text-center">
+                <div
+                class="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2"
+                >
+                Or sign up with e-mail
+                </div>
+            </div>
+
+            <div class="mx-auto max-w-xs">
+                <form action="/signup" method="post">
+                    <input
+                        class="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                        name="username"
+                        type="text"
+                        placeholder="Username"
+                    />
+                    <input
+                        class="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
+                        name="email"
+                        type="email"
+                        placeholder="Email"
+                    />
+                    <input
+                        class="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
+                        name="password"
+                        type="password"
+                        placeholder="Password"
+                    />
+                    <input
+                        class="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
+                        name="confirmation"
+                        type="password"
+                        placeholder="Confirm Password"
+                    />
+                    <button
+                        class="mt-5 tracking-wide font-semibold bg-mainColor text-gray-100 w-full py-4 rounded-lg hover:bg-secondayColor transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
+                        type="submit"
+                    >
+                    <svg
+                        class="w-6 h-6 -ml-2"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                        <circle cx="8.5" cy="7" r="4" />
+                        <path d="M20 8v6M23 11h-6" />
+                    </svg>
+                    <span class="ml-3">
+                        Sign Up
+                    </span>
+                    </button>
+                </form>
+                <p class="mt-6 text-xs text-gray-600 text-center">
+                    I agree to abide by Git-Quizzes's
+                    <a href="#" class="border-b border-gray-500 border-dotted">Terms of Service</a>
+                    and its
+                    <a href="#" class="border-b border-gray-500 border-dotted">Privacy Policy</a>
+                </p>
+            </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Burger menus
+        document.addEventListener('DOMContentLoaded', function() {
+            // open
+            const burger = document.querySelectorAll('.navbar-burger');
+            const menu = document.querySelectorAll('.navbar-menu');
+        
+            if (burger.length && menu.length) {
+                for (var i = 0; i < burger.length; i++) {
+                    burger[i].addEventListener('click', function() {
+                        for (var j = 0; j < menu.length; j++) {
+                            menu[j].classList.toggle('hidden');
+                        }
+                    });
+                }
+            }
+        
+            // close
+            const close = document.querySelectorAll('.navbar-close');
+            const backdrop = document.querySelectorAll('.navbar-backdrop');
+        
+            if (close.length) {
+                for (var i = 0; i < close.length; i++) {
+                    close[i].addEventListener('click', function() {
+                        for (var j = 0; j < menu.length; j++) {
+                            menu[j].classList.toggle('hidden');
+                        }
+                    });
+                }
+            }
+        
+            if (backdrop.length) {
+                for (var i = 0; i < backdrop.length; i++) {
+                    backdrop[i].addEventListener('click', function() {
+                        for (var j = 0; j < menu.length; j++) {
+                            menu[j].classList.toggle('hidden');
+                        }
+                    });
+                }
+            }
+        });
+        </script>
+</body>
+</html>
