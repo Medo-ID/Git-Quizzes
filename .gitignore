@@ -1,7 +1,7 @@
 node_modules/
-/flask_session
-/__pycache__
-/venv
+flask_session/
+__pycache__/
+venv/
 
 gitquizzesdb.db
 .env
