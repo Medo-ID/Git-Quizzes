@@ -1,25 +1,98 @@
-from flask import Flask, flash, redirect, render_template, request, session
+import os
+import requests
+
+from flask import Flask, flash, url_for, abort, redirect, render_template, request, session
 from cs50 import SQL
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-
+from authlib.integrations.flask_client import OAuth
 from helperFunctions import login_required
 
 # Configure application
 app = Flask(__name__)
 
 # Configure session to use signed cookies
-app.config["SECRET_KEY"] = 'HJlsNj3FaKBndhIiyrJVk7q7D9LLBzaL'
+app.config["SECRET_KEY"] = 'c6607322-a125-435b-8336-4b480e91eace'
 app.config["SESSION_TYPE"] = 'filesystem'
 app.config["SESSION_PERMANENT"] = False
 Session(app)
 
 # Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///gitQuizzes.db")
+db = SQL("sqlite:///gitquizzesdb.db")
+
+# google oauth config
+appConf = {
+    "OAUTH2_CLIENT_ID": os.getenv("client_id"),
+    "OAUTH2_CLIENT_SECRET": os.getenv("client_secret"),
+    "OAUTH2_META_URL": "https://accounts.google.com/.well-known/openid-configuration",
+    "FLASK_SECRET": "a2e8dfba-366f-445c-bae8-74613313b446",
+    "FLASK_PORT": 5000
+}
+
+app.secret_key = appConf.get("FLASK_SECRET")
+oauth = OAuth(app)
+
+# list of google scopes - https://developers.google.com/identity/protocols/oauth2/scopes
+oauth.register(
+    "myApp",
+    client_id=appConf.get("OAUTH2_CLIENT_ID"),
+    client_secret=appConf.get("OAUTH2_CLIENT_SECRET"),
+    client_kwargs={"scope": "openid profile email"},
+    server_metadata_url=f'{appConf.get("OAUTH2_META_URL")}'
+)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    if "user_id" in session:
+        return redirect('/dashboard')
+    else:
+        return render_template('index.html')
+
+
+@app.route("/signin-google")
+def googleCallback():
+    # fetch access token and id token using authorization code
+    token = oauth.myApp.authorize_access_token()
+
+    # Retrieve user_id from the session
+    user_info = token.get("userinfo", {})
+
+    # make sure user infos are well formatted
+    empty = ""
+    name = empty.join(user_info.get("name"))
+    email = empty.join(user_info.get("email"))
+    picture = user_info.get("picture")
+
+    # query database for username
+    rows = db.execute("SELECT * FROM users WHERE username = ? OR email = ?", name, email)
+
+    # if the user is already inserted in database
+    if len(rows) != 0:
+        session["user_id"] = rows[0]["id"]
+        return redirect('/dashboard')
+    # else
+    else:
+        # insert the username into the database
+        db.execute(
+            "INSERT INTO users (username, email, image) VALUES(?, ?, ?)",
+            name,
+            email,
+            picture
+        )
+
+        # remember which user has registered
+        username = db.execute("SELECT * FROM users WHERE username = ? AND email = ?", name, email)
+        session["user_id"] = username[0]["id"]
+
+        #redirect user to dashboard
+        return redirect('/dashboard')
+
+
+@app.route("/google-login")
+def googleLogin():
+    if "user_id" in session:
+        abort(404)
+    return oauth.myApp.authorize_redirect(redirect_uri=url_for("googleCallback", _external=True))
 
 
 @app.route('/signup', methods=["GET", "POST"])
@@ -55,7 +128,11 @@ def signup():
 
         # insert the username into the database
         db.execute(
-            "INSERT INTO users (username, email, hash) VALUES(?, ?, ?)", username, email, hashed_password
+            "INSERT INTO users (username, email, hash, image) VALUES(?, ?, ?, ?)", 
+            username, 
+            email, 
+            hashed_password,
+            '/static/img/default-users.jpg'
         )
 
         # remember which user has registered
@@ -73,9 +150,6 @@ def signup():
 @app.route('/login', methods=["GET", "POST"])
 def login():
     """Log user in"""
-
-    # Forget any user_id
-    session.clear()
 
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
@@ -130,9 +204,9 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    userinfo = db.execute("SELECT * FROM users WHERE id = ?", session["user_id"])
-
-    return render_template('dashboard.html', userinfo=userinfo)
+    userinfo = db.execute("SELECT * FROM users WHERE id = ?", session["user_id"]) 
+    
+    return render_template('dashboard.html', userinfo=userinfo[0])
 
 
 @app.route('/quiz')

@@ -6,5 +6,9 @@
 
 {% block main %}
     <h1 class="bg-blue-100">User Dahboard</h1>
-    <h1>{{ userinfo }}</h1>
+    <p><a href="{{url_for('logout')}}">Logout</a></p>
+    
+    <h1>{{ userinfo.username }}</h1>
+    <h1>{{ userinfo.email }}</h1>
+    <h1>{{ userinfo.image }}</h1>
 {% endblock %}
