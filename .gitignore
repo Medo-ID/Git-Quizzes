@@ -2,3 +2,4 @@ node_modules/
 flask_session/
 gitQuizzes.db
 __pycache__/
+.env
