@@ -5,10 +5,15 @@
 {% endblock %}
 
 {% block main %}
-    <h1 class="bg-blue-100">User Dahboard</h1>
-    <p><a href="{{url_for('logout')}}">Logout</a></p>
+    <h1 class="text-4xl text-mainBlack my-2 ml-4 font-bold">Dahboard</h1>
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-10">
+        <div class="bg-white rounded-lg">1</div>
+        <div class="bg-white rounded-lg">2</div>
+        <div class="bg-white rounded-lg">3</div>
+        <div class="bg-white rounded-lg">4</div>
+        <div class="lg:col-span-2 bg-white rounded-lg">5</div>
+        <div class="bg-white rounded-lg">6</div>
+        <div class="bg-white rounded-lg">7</div>
+    </div>
     
-    <h1>{{ userinfo.username }}</h1>
-    <h1>{{ userinfo.email }}</h1>
-    <h1>{{ userinfo.image }}</h1>
 {% endblock %}
