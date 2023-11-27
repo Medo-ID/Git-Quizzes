@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/css/main.css">
+    <script src="/static/app.js" defer></script>
     <!-- Favicon -->
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <!-- chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Git Quizzes: {% block title %}{% endblock %}</title>
 </head>
-<body class="mx-4 xl:mx-20 2xl:mx-52 bg-mainGrey text-mainBlack"">
+<body class="h-screen mx-4 xl:mx-20 2xl:mx-52 bg-mainGrey text-mainBlack"">
     <!-- navbar -->
     <nav class="bg-secondayColor text-mainGrey relative px-4 py-4 flex justify-between items-center mb-4 rounded-b-3xl">
         <a class="text-3xl font-bold leading-none" href="/">
@@ -23,9 +26,9 @@
             </button>
         </div>
         <ul class="hidden absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 lg:mx-auto lg:flex lg:items-center lg:w-auto lg:space-x-6">
-			<li><a class="text-lg ml-4 text-mainGrey font-semibold hover:text-mainColor" href="#">Dashboard</a></li>
-			<li><a class="text-lg ml-4 text-mainGrey font-semibold hover:text-mainColor" href="#">Quiz</a></li>
-			<li><a class="text-lg ml-4 text-mainGrey font-semibold hover:text-mainColor" href="#">Profile</a></li>	
+			<li><a class="text-lg ml-4 text-mainGrey font-semibold hover:text-mainColor" href="/dashboard">Dashboard</a></li>
+			<li><a class="text-lg ml-4 text-mainGrey font-semibold hover:text-mainColor" href="/quiz">Quiz</a></li>
+			<li><a class="text-lg ml-4 text-mainGrey font-semibold hover:text-mainColor" href="/profile">Profile</a></li>	
 		</ul>
         <a class="hidden lg:inline-block lg:ml-auto lg:mr-3 py-2 px-6 bg-gray-50 hover:bg-mainColor text-sm text-mainBlack hover:text-mainGrey font-bold  rounded-lg transition duration-200" href="{{url_for('logout')}}">Logout</a>
     </nav>
@@ -44,9 +47,9 @@
             </div>
             <div>
 				<ul>
-					<li class="mb-1"><a class="block p-4 text-sm font-semibold text-mainGrey hover:bg-mainGrey hover:text-mainBlack rounded" href="#">Dashboard</a></li>
-					<li class="mb-1"><a class="block p-4 text-sm font-semibold text-mainGrey hover:bg-mainGrey hover:text-mainBlack rounded" href="#">Quiz</a></li>
-					<li class="mb-1"><a class="block p-4 text-sm font-semibold text-mainGrey hover:bg-mainGrey hover:text-mainBlack rounded" href="#">Profile</a></li>
+					<li class="mb-1"><a class="block p-4 text-sm font-semibold text-mainGrey hover:bg-mainGrey hover:text-mainBlack rounded" href="/dashboard">Dashboard</a></li>
+					<li class="mb-1"><a class="block p-4 text-sm font-semibold text-mainGrey hover:bg-mainGrey hover:text-mainBlack rounded" href="/quiz">Quiz</a></li>
+					<li class="mb-1"><a class="block p-4 text-sm font-semibold text-mainGrey hover:bg-mainGrey hover:text-mainBlack rounded" href="/profile">Profile</a></li>
 					<li class="mb-1"><a class="block p-4 text-sm font-semibold text-mainBlack hover:bg-mainGrey rounded" href="/logout">Logout</a></li>
 				</ul>
 			</div>
@@ -59,7 +62,7 @@
     </main>
 
     <!-- Footer -->
-    <section class="bg-secondayColor rounded-3xl my-5">
+    <section class="bg-secondayColor rounded-t-3xl mt-5">
         <div class="max-w-screen-xl px-4 py-12 mx-auto space-y-8 overflow-hidden sm:px-6 lg:px-8">
             <div class="flex justify-center mt-8 space-x-6">
                 <a href="https://www.instagram.com/medo_idaghdour7/">

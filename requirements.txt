@@ -1,1 +1,40 @@
-<p><a href="{{url_for('logout')}}">Logout</a></p>
+# Pseudocode for server-side logic
+
+import random
+
+# Function to fetch questions from OTDB and store them in the database
+def fetch_and_store_questions(category):
+    # Fetch questions from OTDB API based on the category
+    questions = get_questions_from_otdb(category)
+    
+    # Store questions in your database
+
+# Function to get a daily non-repetitive question
+def get_daily_question(category):
+    # Check if it's a new day, if yes, refresh the daily question list
+    if is_new_day():
+        refresh_daily_questions(category)
+
+    # Get a random question from the daily list
+    question = get_random_daily_question(category)
+
+    # Mark the question as served to the user
+
+    return question
+
+# Function to refresh the daily question list
+def refresh_daily_questions(category):
+    # Fetch a new subset of questions from the larger pool
+    new_daily_questions = fetch_subset_from_database(category, subset_size)
+    
+    # Update the daily question list in your database
+
+# Function to get a random question from the daily list
+def get_random_daily_question(category):
+    # Fetch the daily question list from your database
+    daily_questions = get_daily_questions_from_database(category)
+
+    # Get a random question from the list
+    question = random.choice(daily_questions)
+
+    return question
