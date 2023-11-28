@@ -6,7 +6,7 @@ from cs50 import SQL
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from authlib.integrations.flask_client import OAuth
-from helperFunctions import login_required
+from helperFunctions import login_required, getQuestions
 
 # Configure application
 app = Flask(__name__)
@@ -209,10 +209,23 @@ def dashboard():
     return render_template('dashboard.html', userinfo=userinfo[0])
 
 
-@app.route('/quiz')
+@app.route('/quiz', methods=["GET", "POST"])
 @login_required
 def quiz():
-    return render_template('quiz.html')
+    if request.method == "GET":
+        categories = [{'name':'Books', 'id': 10}, {'name': 'Conputers', 'id': 7},{'name': 'History', 'id': 8},{'name': 'Geography', 'id': 9},{'name': 'Mathematics', 'id': 10},{'name': 'Sports', 'id': 11}]
+        
+        return render_template('quiz.html', categories=categories, display='none')
+    ## TODO: fix this code
+    if request.method == "POST":
+        # Get user informations
+        category = request.form.get("category")
+        difficulty = request.form.get("difficulty")
+        
+        # Get a question, depending on the category/difficulty chosen by the user
+        data = getQuestions(category, difficulty)
+        
+        return render_template('quiz.html', data=data, category=category, display='block')
 
 
 @app.route('/profile')
