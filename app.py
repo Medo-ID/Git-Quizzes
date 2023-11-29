@@ -212,20 +212,41 @@ def dashboard():
 @app.route('/quiz', methods=["GET", "POST"])
 @login_required
 def quiz():
-    if request.method == "GET":
-        categories = [{'name':'Books', 'id': 10}, {'name': 'Conputers', 'id': 7},{'name': 'History', 'id': 8},{'name': 'Geography', 'id': 9},{'name': 'Mathematics', 'id': 10},{'name': 'Sports', 'id': 11}]
-        
-        return render_template('quiz.html', categories=categories, display='none')
-    ## TODO: fix this code
+
+    categories = [{'name':'Books', 'id': 10}, {'name': 'Conputers', 'id': 7},{'name': 'History', 'id': 8},{'name': 'Geography', 'id': 9},{'name': 'Mathematics', 'id': 10},{'name': 'Sports', 'id': 11}] 
+    data = []
+    correct_answers = ['allo', 'malo']
+
+    score = 4
+    # correct = 0
+    # incorrect = 0
+    
     if request.method == "POST":
-        # Get user informations
-        category = request.form.get("category")
-        difficulty = request.form.get("difficulty")
         
-        # Get a question, depending on the category/difficulty chosen by the user
-        data = getQuestions(category, difficulty)
-        
-        return render_template('quiz.html', data=data, category=category, display='block')
+        # Check which form was submitted based on the form name or any other identifier
+        if 'form1_submit' in request.form:
+            # Get user informations
+            category = request.form.get("category")
+            difficulty = request.form.get("difficulty")
+
+            if not category or not difficulty:
+                flash("You must choose category and difficulty please!")
+                return redirect("/quiz") 
+            # Get a question, depending on the category/difficulty chosen by the user
+            data = getQuestions(category, difficulty)
+
+            return render_template('quiz.html', categories=categories, data=data, category=category, quiz_display='block')
+
+        elif 'form2_submit' in request.form:
+            
+            for question in data:
+                answer = f'qus{question["id"]}'
+                if request.form.get(answer) == question["correct_answer"]:
+                    score += 1
+
+            return render_template('quiz.html', categories=categories, correct_answers=correct_answers, score=score, quiz_display='none')
+    else:
+        return render_template('quiz.html', categories=categories, quiz_display='none')
 
 
 @app.route('/profile')

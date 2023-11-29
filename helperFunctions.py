@@ -23,7 +23,7 @@ def getQuestions(category, difficulty):
     Get question data from trevia endpoint api.
     
     """
-
+    number = 1
     questions_data = []
     url =f"https://opentdb.com/api.php?amount=10&category={category}&difficulty={difficulty}&type=multiple"
     
@@ -43,9 +43,11 @@ def getQuestions(category, difficulty):
                 question.pop("category", None)
                 question["incorrect_answers"].append(question["correct_answer"])
                 random.shuffle(question["incorrect_answers"])
-                
+                question["id"] = number
+                number += 1
                 questions_data.append(question)
             
+            number = 1
             return questions_data
 
         # If the request was not successful, return an error message
