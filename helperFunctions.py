@@ -4,11 +4,7 @@ import requests
 import random
 
 def login_required(f):
-    """
-    Decorate routes to require login.
-    http://flask.pocoo.org/docs/0.12/patterns/viewdecorators/
-    
-    """
+    """Decorate routes to require login."""
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if session.get("user_id") is None:
@@ -18,14 +14,11 @@ def login_required(f):
     return decorated_function
 
 
-def getQuestions(category, difficulty):
-    """
-    Get question data from trevia endpoint api.
-    
-    """
+def getQuestions(category_id, difficulty):
+    """Get question data from trevia endpoint api."""
     number = 1
     questions_data = []
-    url =f"https://opentdb.com/api.php?amount=10&category={category}&difficulty={difficulty}&type=multiple"
+    url =f"https://opentdb.com/api.php?amount=10&category={category_id}&difficulty={difficulty}&type=multiple"
     
     try:
         # Make a GET request to the trivia API

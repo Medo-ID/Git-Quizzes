@@ -168,9 +168,7 @@ def login():
             return redirect("/login")
 
         # Query database for username
-        rows = db.execute(
-            "SELECT * FROM users WHERE username = ?", username
-        )
+        rows = db.execute("SELECT * FROM users WHERE username = ?", username)
 
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(
@@ -212,39 +210,85 @@ def dashboard():
 @app.route('/quiz', methods=["GET", "POST"])
 @login_required
 def quiz():
-
-    categories = [{'name':'Books', 'id': 10}, {'name': 'Conputers', 'id': 7},{'name': 'History', 'id': 8},{'name': 'Geography', 'id': 9},{'name': 'Mathematics', 'id': 10},{'name': 'Sports', 'id': 11}] 
-    data = []
-    correct_answers = ['allo', 'malo']
-
-    score = 4
-    # correct = 0
-    # incorrect = 0
+    # supported gategories
+    categories = [{'name':'Books', 'id': 10}, {'name': 'Conputers', 'id': 18},{'name': 'History', 'id': 23},{'name': 'Geography', 'id': 22},{'name': 'Mathematics', 'id': 19},{'name': 'Sports', 'id': 21}] 
     
+    # handle post methods for quiz page
     if request.method == "POST":
+
+        data, user_answers= [], []
+        score = 0
         
-        # Check which form was submitted based on the form name or any other identifier
+        # if submit the first form
         if 'form1_submit' in request.form:
-            # Get user informations
-            category = request.form.get("category")
+            
+            # get user informations
+            category_id = request.form.get("category")
             difficulty = request.form.get("difficulty")
 
-            if not category or not difficulty:
+            # check user input
+            if not category_id or not difficulty:
                 flash("You must choose category and difficulty please!")
                 return redirect("/quiz") 
-            # Get a question, depending on the category/difficulty chosen by the user
-            data = getQuestions(category, difficulty)
 
-            return render_template('quiz.html', categories=categories, data=data, category=category, quiz_display='block')
+            # get a question, depending on the category/difficulty chosen by the user
+            data = getQuestions(category_id, difficulty)
 
-        elif 'form2_submit' in request.form:
+            # make sure temp_answers and temp_category_type tables are empty before we insert new data
+            # get correct answers table and category type table
+            correct_answers = db.execute('SELECT answer FROM temp_answers')
+            category_type = db.execute('SELECT * FROM temp_category_type')
             
+            # ensure correct answers table is empty
+            if len(correct_answers) != 0:
+                #  clear correct answers from database
+                db.execute("DELETE FROM temp_answers")
+            
+            # ensure category type table is empty
+            if len(category_type) != 0:
+                #  clear correct answers from database
+                db.execute("DELETE FROM temp_category_type")
+            
+            # store correct answers
             for question in data:
-                answer = f'qus{question["id"]}'
-                if request.form.get(answer) == question["correct_answer"]:
-                    score += 1
+                db.execute("INSERT INTO temp_answers (answer) VALUES(?)", question["correct_answer"])
+            
+            # find category name that user choose
+            category_name = next((category for category in categories if category['id'] == category_id), None)
 
-            return render_template('quiz.html', categories=categories, correct_answers=correct_answers, score=score, quiz_display='none')
+            # store category and difficulty
+            db.execute("INSERT INTO  temp_category_type (category, difficulty) VALUES(?, ?)", category_name['name'], difficulty)
+
+            # render propre HTML for quiz page
+            return render_template('quiz.html', categories=categories, data=data, category_name=category_name['name'], quiz_display='block')
+        
+        # if submit the second form
+        elif 'form2_submit' in request.form:
+
+            # get correct answers
+            correct_answers = db.execute('SELECT answer FROM temp_answers')
+
+            # get category type
+            category_type = db.execute('SELECT * FROM temp_category_type')
+
+            # colect and store user's answers
+            for n in range(1,11):
+                id = f'qus{n}'
+                user_answers.append(request.form.get(id))
+            
+            # compare user's answer with correct answers
+            for n in range(10):
+                # if correct then score++
+                if user_answers[n] == correct_answers[n]["answer"]:
+                    score += 1
+            
+            ### TODO: Insert data into the database
+            
+            #  clear correct answers from database
+            db.execute("DELETE FROM temp_answers")
+            
+            # render propre HTML for quiz page
+            return render_template('quiz.html', categories=categories, categoryscore=score, quiz_display='none')
     else:
         return render_template('quiz.html', categories=categories, quiz_display='none')
 
