@@ -634,6 +634,10 @@ html {
   margin: auto;
 }
 
+.m-2{
+  margin: 0.5rem;
+}
+
 .mx-10{
   margin-left: 2.5rem;
   margin-right: 2.5rem;
@@ -677,6 +681,11 @@ html {
 .my-\[15px\]{
   margin-top: 15px;
   margin-bottom: 15px;
+}
+
+.mx-2{
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 .-ml-2{
@@ -803,6 +812,10 @@ html {
   max-height: 100vh;
 }
 
+.max-h-\[420px\]{
+  max-height: 420px;
+}
+
 .w-12{
   width: 3rem;
 }
@@ -912,6 +925,14 @@ html {
 
 .items-center{
   align-items: center;
+}
+
+.items-stretch{
+  align-items: stretch;
+}
+
+.justify-start{
+  justify-content: flex-start;
 }
 
 .justify-center{
@@ -1071,11 +1092,6 @@ html {
   border-color: rgb(250 204 21 / var(--tw-border-opacity));
 }
 
-.bg-\[\#707d9d\]{
-  --tw-bg-opacity: 1;
-  background-color: rgb(112 125 157 / var(--tw-bg-opacity));
-}
-
 .bg-blue-100{
   --tw-bg-opacity: 1;
   background-color: rgb(219 234 254 / var(--tw-bg-opacity));
@@ -1136,6 +1152,11 @@ html {
   background-color: rgb(254 252 232 / var(--tw-bg-opacity));
 }
 
+.bg-clearMainColor{
+  --tw-bg-opacity: 1;
+  background-color: rgb(252 225 199 / var(--tw-bg-opacity));
+}
+
 .fill-current{
   fill: currentColor;
 }
@@ -1158,6 +1179,10 @@ html {
 
 .p-6{
   padding: 1.5rem;
+}
+
+.p-1{
+  padding: 0.25rem;
 }
 
 .px-12{

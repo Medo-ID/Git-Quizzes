@@ -7,7 +7,6 @@
 {% block main %}
     <h1 class="text-4xl text-mainBlack my-5 ml-2 font-bold">Dahboard</h1>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 font-semibold">
-        
         <!-- user infos -->
         <div class="md:grid-cols-2 bg-white rounded-lg p-2 shadow gap-2">
             <a 
@@ -31,7 +30,7 @@
                 </svg>
               </div>
             <h3>Your Overall Score</h3>
-            <h3>7.6/10</h3>
+            <h3>{{ "%.2f"|format(userinfo.overall_score|round(2)) }}</h3>
         </div>
         
         <!-- number of correct answers -->
@@ -42,7 +41,7 @@
                 </svg>
             </div>
             <h3>Your Correct Answers</h3>
-            <h3>44</h3>
+            <h3>{{ answer_statistics.correct_answers }}</h3>
         </div>
         
         <!-- number of incorrect answers -->
@@ -53,39 +52,40 @@
                 </svg>
             </div>
             <h3>Your Incorrect Answer</h3>
-            <h3>22</h3>
+            <h3>{{ answer_statistics.incorrect_answers }}</h3>
         </div>
         
         <!-- user's daily contrubitions -->
-        <div class="md:col-span-2 lg:col-span-2 bg-white rounded-lg p-2 shadow gap-2 text-center">
+        <div class="md:col-span-2 lg:col-span-2 bg-white rounded-lg p-2 flex flex-col justify-start text-center shadow gap-2">
             <h1 class="text-xl font-bold mb-4">your daily Contributions</h1>
             
         </div>
 
         <!-- score of every single category -->
-        <div class="bg-white rounded-lg p-2 flex flex-col text-center shadow gap-2">
-            <h1 class="text-xl font-bold mb-4">Your Categories Score</h1>
-            {% for num in range(10) %}
-            <div class="flex flex-row justify-evenly">
-                <h3 class="my-2">Category</h3>
-                <h3 class="my-2">{{ num }} / 10</h3>
+        <div class="bg-white rounded-lg p-2 flex flex-col justify-start shadow gap-2">
+            <h1 class="text-xl font-bold mb-4 text-center">Your Categories Score</h1>
+            {% for category in user_categories_score %}
+            <div class="flex flex-row justify-between items-center p-1">
+                <h3 class="m-2">{{ category.category_name }}</h3>
+                <h3 class="m-2">{{ "%.2f"|format(category.avg_score|round(2)) }} / 10</h3>
             </div>
             <hr>
             {% endfor %}
         </div>
 
         <!-- users rank -->
-        <div class="bg-white rounded-lg p-2 flex flex-col text-center shadow gap-2">
-            <h1 class="text-xl font-bold mb-4">Rank of Top 30</h1>
-            <div class="overflow-y-auto max-h-[520px]">
-                {% for num in range(1, 31) %}
-                <div class="flex flex-row justify-evenly items-center p-2">
-                    <div>{{ num }}</div>
+        <div class="bg-white rounded-lg p-2 flex flex-col justify-start shadow gap-2">
+            <h1 class="text-xl font-bold mb-4 text-center">Rank of Top 10</h1>
+            <div class="overflow-y-auto max-h-[420px]">
+                {% for rank in ranks %}
+                <div class="flex flex-row justify-between items-center p-1">
                     <div class="w-12">
-                        <img class="w-full rounded-full" src="{{ userinfo.image }}" alt="user's profile picture">
+                        <img class="w-full rounded-full" src="{{ rank.image }}" alt="user's profile picture">
                     </div>
-                    <h3 class="text-sm font-semibold text-mainBlack">{{ userinfo.username }}</h3>
+                    <h3 class="text-sm font-semibold text-mainBlack">{{ rank.username }}</h3>
+                    <h3 class="text-sm font-semibold text-mainBlack">{{ "%.2f"|format(rank.overall_score|round(2)) }}</h3>
                 </div>
+                <hr>
                 {% endfor %}
             </div>
         </div>

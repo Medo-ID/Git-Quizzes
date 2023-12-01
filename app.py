@@ -18,7 +18,7 @@ app.config["SESSION_PERMANENT"] = False
 Session(app)
 
 # Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///gitquizzesdb.db")
+db = SQL("sqlite:///gitquizzes.db")
 
 # google oauth config
 appConf = {
@@ -40,6 +40,9 @@ oauth.register(
     client_kwargs={"scope": "openid profile email"},
     server_metadata_url=f'{appConf.get("OAUTH2_META_URL")}'
 )
+
+# supported gategories
+categories = [{'name':'Books', 'id': 10}, {'name': 'Computers', 'id': 18},{'name': 'History', 'id': 23},{'name': 'Geography', 'id': 22},{'name': 'Mathematics', 'id': 19},{'name': 'Sports', 'id': 21}]
 
 @app.route('/')
 def index():
@@ -79,9 +82,23 @@ def googleCallback():
             email,
             picture
         )
-
-        # remember which user has registered
+        
+        # pull the new user infos from database
         username = db.execute("SELECT * FROM users WHERE username = ? AND email = ?", name, email)
+        
+        # insert categories and scores for new user
+        for category in categories:
+            db.execute(
+                "INSERT INTO categories_score (user_id, category_name) VALUES(?, ?)",
+                username[0]["id"],
+                category['name']
+            )
+        
+        # insert number of correct/incorrect answer for new user
+        db.execute(
+            "INSERT INTO user_answers_statistics (user_id) VALUES(?)",username[0]["id"])
+        
+        # remember which user has registered
         session["user_id"] = username[0]["id"]
 
         #redirect user to dashboard
@@ -135,9 +152,23 @@ def signup():
             '/static/img/default-users.jpg'
         )
 
+        # pull the new user infos from database
+        username = db.execute("SELECT * FROM users WHERE username = ? AND email = ?", username, email)
+        
+        # insert categories and scores for new user
+        for category in categories:
+            db.execute(
+                "INSERT INTO categories_score (user_id, category_name) VALUES(?, ?)",
+                username[0]["id"],
+                category['name']
+            )
+        
+        # insert number of correct/incorrect answer for new user
+        db.execute(
+            "INSERT INTO user_answers_statistics (user_id) VALUES(?)",username[0]["id"])
+        
         # remember which user has registered
-        usernames = db.execute("SELECT * FROM users WHERE username = ?", username)
-        session["user_id"] = usernames[0]["id"]
+        session["user_id"] = username[0]["id"]
 
         # Redirect user to home page
         return redirect("/dashboard")
@@ -202,16 +233,17 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    userinfo = db.execute("SELECT * FROM users WHERE id = ?", session["user_id"]) 
+    userinfo = db.execute("SELECT * FROM users WHERE id = ?", session["user_id"])
+    answer_statistics = db.execute("SELECT * from user_answers_statistics WHERE user_id = ?", session["user_id"])
+    user_categories_score = db.execute("SELECT * FROM categories_score WHERE user_id = ?", session["user_id"])
+    ranks = db.execute("SELECT * FROM users ORDER BY overall_score DESC LIMIT 10")
     
-    return render_template('dashboard.html', userinfo=userinfo[0])
+    return render_template('dashboard.html', userinfo=userinfo[0], answer_statistics=answer_statistics[0], user_categories_score=user_categories_score, ranks=ranks)
 
 
 @app.route('/quiz', methods=["GET", "POST"])
 @login_required
-def quiz():
-    # supported gategories
-    categories = [{'name':'Books', 'id': 10}, {'name': 'Conputers', 'id': 18},{'name': 'History', 'id': 23},{'name': 'Geography', 'id': 22},{'name': 'Mathematics', 'id': 19},{'name': 'Sports', 'id': 21}] 
+def quiz(): 
     
     # handle post methods for quiz page
     if request.method == "POST":
@@ -253,8 +285,11 @@ def quiz():
             for question in data:
                 db.execute("INSERT INTO temp_answers (answer) VALUES(?)", question["correct_answer"])
             
-            # find category name that user choose
-            category_name = next((category for category in categories if category['id'] == category_id), None)
+            # convert category variable type so we can find the name of category chosen by user
+            converted_category_id = int(category_id)
+            
+            # find category chosen by user
+            category_name = next((category for category in categories if category['id'] == converted_category_id), None)
 
             # store category and difficulty
             db.execute("INSERT INTO  temp_category_type (category, difficulty) VALUES(?, ?)", category_name['name'], difficulty)
@@ -282,13 +317,70 @@ def quiz():
                 if user_answers[n] == correct_answers[n]["answer"]:
                     score += 1
             
-            ### TODO: Insert data into the database
+            # update categories score table with new score of the specific category the user choose
+            # get the current score
+            current_score = db.execute("SELECT * FROM categories_score WHERE user_id = ? AND category_name = ?",
+                session["user_id"],
+                category_type[0]["category"]
+            )
+
+            # update category with new avg score
+            db.execute("UPDATE categories_score SET attempts = attempts + ?, avg_score = ? WHERE user_id = ? AND category_name = ?",
+                1,
+                (score + current_score[0]["avg_score"]) / 2,
+                session["user_id"],
+                category_type[0]["category"]
+            )
+            
+            # update user's answers statistics table with new data after user finish quiz
+            db.execute("UPDATE user_answers_statistics SET correct_answers = correct_answers + ?, incorrect_answers = incorrect_answers + ? WHERE user_id = ? ",
+                score,
+                10 - score,
+                session["user_id"]
+            )
+            
+            # insert into user's history table data that describe the process
+            db.execute("INSERT INTO user_history (user_id, category_name, score, difficulty) VALUES(?, ?, ?, ?)",
+                session["user_id"],
+                category_type[0]["category"],
+                score,
+                category_type[0]["difficulty"]
+            )
+
+            # finaly update the overall score
+            # need to get first the avg score of all category with value greate than 0.0
+            avg_score_categories = db.execute("SELECT * FROM categories_score WHERE user_id = ? AND avg_score > 0.0",
+                session["user_id"]
+            )
+
+            # this is the number that we will divided the sum of all categories greater than 0.0
+            categories_length = len(avg_score_categories)
+            
+            # initialize the sum of categories
+            categories_sum = 0
+
+            # calculate sum of categories
+            for row in avg_score_categories:
+                categories_sum += row["avg_score"]
+
+            # calculate overall score
+            overall_score = categories_sum / categories_length
+
+            # update the over all score of the user
+            db.execute("UPDATE users SET overall_score = ? WHERE id = ?",
+                overall_score,
+                session["user_id"]
+            )
             
             #  clear correct answers from database
             db.execute("DELETE FROM temp_answers")
             
+            #  clear category type from database
+            db.execute("DELETE FROM temp_category_type")
+            
             # render propre HTML for quiz page
-            return render_template('quiz.html', categories=categories, categoryscore=score, quiz_display='none')
+            flash(f"Congratulations! You pass the quiz and this is your score for today: {score} in category: {category_type[0]["category"]}")
+            return redirect('/dashboard')
     else:
         return render_template('quiz.html', categories=categories, quiz_display='none')
 
@@ -301,4 +393,3 @@ def profile():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
