@@ -9,9 +9,9 @@
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     <title>Git Quizzes: {% block title %}{% endblock %}</title>
 </head>
-<body class="h-screen mx-4 xl:mx-20 2xl:mx-52 bg-mainGrey text-mainBlack"">
+<body class="max-h-fit mx-4 xl:mx-20 2xl:mx-52 bg-mainGrey text-mainBlack">
     <!-- navbar -->
-    <nav class="bg-secondayColor text-mainGrey relative px-4 py-4 flex justify-between items-center mb-4 rounded-b-3xl">
+    <nav class="bg-secondayColor text-mainGrey relative px-4 py-4 flex justify-between items-center my-4 rounded-3xl">
         <a class="text-3xl font-bold leading-none" href="/">
             <h1 class="font-extrabold text-2xl hover:text-mainColor">Git-Quizzes</h1>
         </a>
@@ -48,7 +48,7 @@
 					<li class="mb-1"><a class="block p-4 text-sm font-semibold text-mainGrey hover:bg-mainGrey hover:text-mainBlack rounded" href="/dashboard">Dashboard</a></li>
 					<li class="mb-1"><a class="block p-4 text-sm font-semibold text-mainGrey hover:bg-mainGrey hover:text-mainBlack rounded" href="/quiz">Quiz</a></li>
 					<li class="mb-1"><a class="block p-4 text-sm font-semibold text-mainGrey hover:bg-mainGrey hover:text-mainBlack rounded" href="/profile">Profile</a></li>
-					<li class="mb-1"><a class="block p-4 text-sm font-semibold text-mainBlack hover:bg-mainGrey rounded" href="/logout">Logout</a></li>
+					<li class="mb-1"><a class="block p-4 text-sm font-semibold text-mainColor hover:bg-mainGrey rounded" href="/logout">Logout</a></li>
 				</ul>
 			</div>
         </nav>
@@ -99,12 +99,12 @@
         {% endif %}
     {% endwith %}
       <!-- main content -->
-    <main class="container m-auto">
+    <main class="container mx-auto mb-14">
         {% block main %}{% endblock %}
     </main>
 
     <!-- Footer -->
-    <section class="bg-secondayColor rounded-t-3xl mt-5">
+    <section class="bg-secondayColor rounded-3xl my-4">
         <div class="max-w-screen-xl px-4 py-12 mx-auto space-y-8 overflow-hidden sm:px-6 lg:px-8">
             <div class="flex justify-center mt-8 space-x-6">
                 <a href="https://www.instagram.com/medo_idaghdour7/">
@@ -132,6 +132,10 @@
         </div>
     </section>
     
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js"></script>
+
     <script>
         // Burger menus
         document.addEventListener('DOMContentLoaded', function() {
@@ -173,6 +177,58 @@
                 }
             }
         });
-        </script>      
+
+        // setup 
+        const data = {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+                label: 'Weekly Sales',
+                data: [18, 12, 6, 9, 12, 3, 9],
+                backgroundColor: [
+                    'rgba(255, 26, 104, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(0, 0, 0, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 26, 104, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(0, 0, 0, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        // config 
+        const config = {
+            type: 'bar',
+            data,
+            options: {
+                maintainAspectRetio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+
+        // render init block
+        const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+
+        // Instantly assign Chart.js version
+        const chartVersion = document.getElementById('chartVersion');
+        chartVersion.innerText = Chart.version;
+    </script>      
 </body>
 </html>

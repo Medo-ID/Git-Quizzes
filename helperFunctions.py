@@ -2,6 +2,8 @@ from flask import redirect, session, jsonify
 from functools import wraps
 import requests
 import random
+from PIL import Image
+from io import BytesIO
 
 def login_required(f):
     """Decorate routes to require login."""
@@ -49,5 +51,38 @@ def getQuestions(category_id, difficulty):
     except Exception as error:
         # Handle exceptions, such as connection errors
         return jsonify({'error': str(error)}), 500
+
+def is_valid_image_url(url):
+    # info message
+    message = ''
+    
+    try:
+        response = requests.get(url)
+        
+        # Check if the request was successful (status code 200)
+        if response.status_code != 200:
+            message = f"Failed to retrieve image. Status code: {response.status_code}"
+            return False, message
+
+        img = Image.open(BytesIO(response.content))
+        
+        # Check image format (convert to lowercase for case-insensitive comparison)
+        if img.format.lower() not in ['jpg', 'jpeg', 'png', 'gif', 'bmp']:
+            message = "Unsupported image format"
+            return False, message
+
+        # Check image file size using the content-length header
+        max_file_size_mb = 5
+        content_length = response.headers.get('content-length')
+        
+        if content_length is not None and int(content_length) > max_file_size_mb * 1024 * 1024:
+            message = f"Image file size exceeds the allowed limit ({max_file_size_mb} MB)"
+            return False, message
+        
+        return True, message
+    
+    except Exception as error:
+        message = f"Error validating image URL: {error}"
+        return False, message
 
     

@@ -1,14 +1,62 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    User Profile
+{{ userinfo.username }}'s Profile
 {% endblock %}
 
 {% block main %}
-    <h1 class="text-4xl text-mainBlack my-[15px] ml-2 font-bold">Profile</h1>
-    <div class="max-w-lg mx-auto bg-white p-4 rounded-md shadow-md">
-        <h1 class="text-2xl font-bold mb-4">Your daily Contributions Chart</h1>
-
-        <div id="chartDiv" style="max-width: 740px;height: 215px;margin: 0px auto;"></div> 
+    <h1 class="text-4xl text-mainBlack my-4 ml-2 font-bold">{{ userinfo.username }}'s Profile</h1>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 font-semibold">
+        <div class="grid grid-cols-1 lg:col-span-1 gap-8">
+            <div class="flex flex-col justify-center items-center bg-white shadow p-4 rounded-lg gap-5">
+                <h1 class="text-base text-mainColor font-extrabold mb-4">Your profile infos</h1>
+                <div class="h-20 w-20 rounded-full border-2 border-mainColor">
+                    <img class="w-full rounded-full" src="{{ userinfo.image }}" alt="user's profile picture">
+                </div>
+                <h3 class="text-mainBlack">{{ userinfo.username }}</h3>
+            
+                <h3 class="text-mainBlack">{{ userinfo.email }}</h3>
+            </div>
+            <div class="flex flex-col justify-center items-center bg-white shadow p-4 rounded-lg gap-5">
+                <h1 class="text-base text-mainColor font-extrabold mb-4">Your stats</h1>
+                <h3>Over all score: <span class="ml-4">{{ userinfo.overall_score }}</span></h3>
+                <h3>Correct Answers: <span class="ml-4">{{ answer_statistics.correct_answers }}</span></h3>
+                <h3>Wrong Answers: <span class="ml-4">{{ answer_statistics.incorrect_answers }}</span></h3>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 lg:col-span-2 gap-8">
+            <div class="col-span-2 bg-white shadow p-4 rounded-lg">
+                <h1 class="text-base text-mainColor font-extrabold mx-2">Edit Profile</h1>
+                <form 
+                    action="/profile"
+                    method="post"
+                    class="flex flex-col gap-5 justify-evenly items-start"
+                >
+                    <div class="m-2 w-full md:w-1/2">
+                        <h3 class="">Change username</h3>
+                        <input class="text-sm py-3 px-2 my-2 rounded-lg w-full border outline-mainColor" type="text" name="new_username" placeholder="New username">
+                    </div>
+                    
+                    <div class="m-2 w-full md:w-1/2">
+                        <h3 class="">Update your password</h3>
+                        <input class="text-sm py-3 px-2 my-2 rounded-lg w-full border outline-mainColor" type="password" name="old_password" placeholder="Old password">
+                        <input class="text-sm py-3 px-2 my-2 rounded-lg w-full border outline-mainColor" type="password" name="new_password" placeholder="New password">
+                        <input class="text-sm py-3 px-2 my-2 rounded-lg w-full border outline-mainColor" type="password" name="confirm_new_password" placeholder="Confirm new password">
+                    </div>
+                    <div class="m-2 w-full md:w-1/2">
+                        <h3 class="">Change profile picture</h3>
+                        <input class="text-sm py-3 px-2 my-2 rounded-lg w-full border outline-mainColor" type="text" name="image_link" placeholder="Imgae link">
+                    </div>
+                    
+                    <button type="submit" class="w-full text-base mx-auto md:ml-2 font-semibold text-white bg-mainColor my-2 px-4 py-2 rounded-lg sm:max-w-xs sm:text-sm sm:leading-6">Update Profile</button>
+                </form>
+            </div>
+            <div class="col-span-2 bg-white shadow p-4 rounded-lg">
+                <h1 class="text-base text-mainColor font-extrabold mb-4 text-center">Your daily activity stats</h1>
+                <div class="w-full bg-white mx-auto p-4 border-2 border-mainColor rounded-lg">
+                    <canvas id="myChart"></canvas>
+                </div>
+            </div>
+        </div>
     </div> 
 {% endblock %}

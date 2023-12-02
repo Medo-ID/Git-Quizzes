@@ -6,7 +6,7 @@ from cs50 import SQL
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from authlib.integrations.flask_client import OAuth
-from helperFunctions import login_required, getQuestions
+from helperFunctions import login_required, getQuestions, is_valid_image_url
 
 # Configure application
 app = Flask(__name__)
@@ -67,7 +67,7 @@ def googleCallback():
     picture = user_info.get("picture")
 
     # query database for username
-    rows = db.execute("SELECT * FROM users WHERE username = ? OR email = ?", name, email)
+    rows = db.execute("SELECT * FROM users WHERE email = ?", email)
 
     # if the user is already inserted in database
     if len(rows) != 0:
@@ -233,6 +233,8 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
+    """User Dashboard"""
+    
     userinfo = db.execute("SELECT * FROM users WHERE id = ?", session["user_id"])
     answer_statistics = db.execute("SELECT * from user_answers_statistics WHERE user_id = ?", session["user_id"])
     user_categories_score = db.execute("SELECT * FROM categories_score WHERE user_id = ?", session["user_id"])
@@ -244,6 +246,7 @@ def dashboard():
 @app.route('/quiz', methods=["GET", "POST"])
 @login_required
 def quiz(): 
+    """Handle quiz page"""
     
     # handle post methods for quiz page
     if request.method == "POST":
@@ -385,10 +388,112 @@ def quiz():
         return render_template('quiz.html', categories=categories, quiz_display='none')
 
 
-@app.route('/profile')
+@app.route('/profile', methods=["GET", "POST"])
 @login_required
 def profile():
-    return render_template('profile.html')
+    """Edit your personal informations"""
+
+    # get current user infos
+    userinfo = db.execute("SELECT * FROM users WHERE id = ?", session["user_id"])
+    answer_statistics = db.execute("SELECT * from user_answers_statistics WHERE user_id = ?", session["user_id"])
+    
+    # user reached route via POST
+    if request.method == "POST":
+        # user inputs
+        new_username = request.form.get("new_username")
+        old_password = request.form.get("old_password")
+        new_password = request.form.get("new_password")
+        confirm_new_password = request.form.get("confirm_new_password")
+        new_image = request.form.get("image_link")
+
+        # update username
+        if new_username:
+            # query database for username
+            rows = db.execute("SELECT * FROM users WHERE username = ?", new_username)
+
+            # ensure username doesn't already exists
+            if len(rows) != 0:
+                flash("username already exists")
+                return redirect('/profile')
+
+            # update the user's username then
+            db.execute(
+                "UPDATE users SET username = ? WHERE id = ?",
+                new_username,
+                session["user_id"],
+            )
+
+            # redirect the user to the updated user profile
+            flash("username updated successfully")
+            return redirect('/profile')
+
+        # update user's password
+        if old_password and new_password and confirm_new_password:
+            # query database for username
+            rows = db.execute("SELECT * FROM users WHERE id = ?", session["user_id"])
+
+            # ensure old password is correct
+            if len(rows) != 1 or not check_password_hash(rows[0]["hash"], old_password):
+                flash("old password is not correct")
+                return redirect('/profile')
+
+            # ensure new password is matching the confirmation
+            if new_password != confirm_new_password:
+                flash("new password is not matching the confirmation")
+                return redirect('/profile')
+
+            # hash the username's new password
+            hashed_password = generate_password_hash(new_password)
+
+            # update the user's password
+            db.execute(
+                "UPDATE users SET hash = ? WHERE id = ?",
+                hashed_password,
+                session["user_id"],
+            )
+
+            # redirect the user to the updated user profile
+            flash("You have set new password successfully")
+            return redirect('/profile')
+
+        # update user's picture
+        if new_image:
+        
+            # update the user's profile picture
+            result, message = is_valid_image_url(new_image)
+
+            if result:
+                # Store the image URL in the database or perform other actions
+                db.execute("UPDATE users SET image = ? WHERE id = ?",
+                    new_image,
+                    session["user_id"]
+                )
+                
+                # redirect the user to the updated user profile
+                flash('Profile picture updated successfully!')
+                return redirect('/profile')
+            
+            else:
+                flash(f'Invalid image. {message}')
+                return redirect('/profile')
+            
+
+        # make sure at least one important field (fields) is (are) not empty
+        if (
+            not new_username
+            and not old_password
+            and not new_password
+            and not confirm_new_password
+            and not new_image
+        ):
+            flash("Invalid request: you tried to submit a completely empty form")
+            return redirect('/profile')
+    
+    # user reached route via GET
+    else:
+        # render user's profile
+        return render_template('profile.html', userinfo=userinfo[0], answer_statistics=answer_statistics[0])
+
 
 
 if __name__ == '__main__':
