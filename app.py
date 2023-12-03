@@ -239,8 +239,9 @@ def dashboard():
     answer_statistics = db.execute("SELECT * from user_answers_statistics WHERE user_id = ?", session["user_id"])
     user_categories_score = db.execute("SELECT * FROM categories_score WHERE user_id = ?", session["user_id"])
     ranks = db.execute("SELECT * FROM users ORDER BY overall_score DESC LIMIT 10")
+    user_history = db.execute("SELECT * FROM user_history WHERE user_id = ?", session["user_id"])
     
-    return render_template('dashboard.html', userinfo=userinfo[0], answer_statistics=answer_statistics[0], user_categories_score=user_categories_score, ranks=ranks)
+    return render_template('dashboard.html', userinfo=userinfo[0], answer_statistics=answer_statistics[0], user_categories_score=user_categories_score, ranks=ranks, user_history=user_history)
 
 
 @app.route('/quiz', methods=["GET", "POST"])
@@ -322,15 +323,21 @@ def quiz():
             
             # update categories score table with new score of the specific category the user choose
             # get the current score
-            current_score = db.execute("SELECT * FROM categories_score WHERE user_id = ? AND category_name = ?",
+            current_score_attempts = db.execute("SELECT * FROM categories_score WHERE user_id = ? AND category_name = ?",
                 session["user_id"],
                 category_type[0]["category"]
             )
 
+            # chaeck if the category has been taken for the first time from the current user
+            if current_score_attempts[0]["attempts"] == 0:
+                category_score = score,
+            else:
+                category_score = (score + current_score_attempts[0]["avg_score"]) / 2
+
             # update category with new avg score
             db.execute("UPDATE categories_score SET attempts = attempts + ?, avg_score = ? WHERE user_id = ? AND category_name = ?",
                 1,
-                (score + current_score[0]["avg_score"]) / 2,
+                category_score,
                 session["user_id"],
                 category_type[0]["category"]
             )
