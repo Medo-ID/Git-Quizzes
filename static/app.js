@@ -40,69 +40,94 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // get user history data
-const dataElement = document.getElementById('data');
-const user_data = dataElement.dataset.message;
+const jsonData = document.getElementById('data').dataset.json;
 
-// Now you can use the 'message' variable in your JavaScript code
-console.log('Message from the server:', user_data);
+// Parse the JSON data
+const appData = JSON.parse(jsonData);
+
+// Function to count unique timestamps and create an object
+function countUniqueTimestamps(dataArray) {
+    // Create an object to store timestamp counts
+    const timestampCounts = {};
+  
+    // Iterate through the array
+    dataArray.forEach(item => {
+      const timestamp = item.timestamp.split(' ')[0];
+  
+      // If the timestamp is not in the object, initialize its count to 1, otherwise increment
+      timestampCounts[timestamp] = (timestampCounts[timestamp] || 0) + 1;
+    });
+  
+    return timestampCounts;
+}
+  
+// execute function for the testing
+const timestampCounts = countUniqueTimestamps(appData);
 
 // chart config
 // date settings
-function isoDaysOfWeek(dt){
-    let weekdays = dt.getDay(); //0 to 6, from sunday
-    weekdays = (weekdays + 6) % 7 + 1; //1 to 7 starting week monday
+function isoDaysOfWeek(dt) {
+    let weekdays = dt.getDay(); // 0 to 6, where 0 is Sunday
+    weekdays = (weekdays + 7) % 7 + 1; // 1 to 7 starting from Sunday
     return '' + weekdays;
 }
 
-// setup date: 365 days/squares
+// setup date: 365 days/squares and check if the user has some task in these days
 function generateDays() {
     const day = new Date();
-    const today = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 0, 0, 0, 0);
+    const today = new Date(day.getFullYear(), day.getMonth(), day.getDate(),0, 0, 0, 0);
     const data_user = [];
-
+    
     let dt = new Date(new Date().setDate(today.getDate() - 365));
 
     while (dt <= today) {
         const iso = dt.toISOString().substr(0, 10);
-        const dayOfWeek = isoDaysOfWeek(dt);
-
-        // Use a different ISO string for each day of the week
-        const isoForWeek = iso + 'T00:00:00'; 
+        const countForDate = timestampCounts[iso] || 0;
 
         data_user.push({
-            x: isoForWeek,
-            y: dayOfWeek,
+            x: iso,
+            y: isoDaysOfWeek(dt),
             d: iso,
-            v: Math.round(Math.random() * 6)
+            v: countForDate
         });
 
-        dt = new Date(dt.setDate(dt.getDate() + 1));
+        dt.setDate(dt.getDate() + 1);
     }
 
     console.log(data_user);
     return data_user;
 }
+
 // setup blocks
 const data = {
     datasets: [{
         label: 'Track your daily activities',
         data: generateDays(),
-        backgroundColor(color){
-            const value = color.dataset.data[color.dataIndex].v;
-            const transparency = (value / 7).toFixed(2);
-            return `rgba(238, 108, 77, ${transparency})`;
+        backgroundColor(d){
+            const value = d.dataset.data[d.dataIndex].v;
+            if (value == 0){
+                return 'rgb(234, 234, 234)';
+            } else if (value == 1 || value == 2){
+                return 'rgb(238, 108, 77, 0.3)'
+            } else if (value == 3 || value == 4){
+                return 'rgb(238, 108, 77, 0.6)'
+            }else if (value == 5 || value == 6){
+                return 'rgb(238, 108, 77, 0.9)'
+            }else {
+                return 'rgb(238, 108, 77, 1)'
+            }
         },
-        borderColor: 'rgb(47, 47, 47)',
-        borderRadius: 1,
+        borderColor: 'rgb(80, 80, 80)',
+        borderRadius: 2,
         borderWidth: 1,
-        hoverBackgroundColor: 'rgb(53, 79, 82)',
+        hoverBackgroundColor: 'rgb(252, 225, 199)',
         hoverBorderColor: 'rgb(252, 225, 199)',
-        width(c){
-            const a = c.chart.chartArea || {};
+        width(w){
+            const a = w.chart.chartArea || {};
             return (a.right - a.left) / 53 - 1;
         },
-        height(c){
-            const a = c.chart.chartArea || {};
+        height(h){
+            const a = h.chart.chartArea || {};
             return (a.bottom - a.top) / 7 - 1;
         },
     }]
@@ -140,12 +165,12 @@ const scales = {
     },
     x: {
         type: 'time',
-        position: 'bottom',
+        position: 'top',
         offset: true,
         time: {
             unit: 'week',
-            round: 'day',
-            isoWeekDay: 1,
+            round: 'week',
+            isoWeekDay: 0,
             displayFormats: {
                 week: 'MMM'
             }
@@ -175,6 +200,18 @@ const config = {
         plugins: {
             legend: {
                 display: false
+            },
+            tooltip: {
+                callbacks: {
+                    title: function (tooltipItems) {
+                        // Customize the title of the tooltip to display 'tasks value of the day'
+                        return `Task: ${tooltipItems[0].raw.v}`;
+                    },
+                    label: function (tooltipItem) {
+                        // Customize the content of each tooltip label to display 'the date of the day'
+                        return `Date: ${tooltipItem.raw.x}`;
+                    }
+                }
             }
         }
     }

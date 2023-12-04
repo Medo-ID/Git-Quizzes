@@ -57,16 +57,16 @@
         
         <!-- user's daily contrubitions -->
         <div class="md:col-span-2 lg:col-span-2 bg-white rounded-lg p-2 flex flex-col justify-start text-center shadow gap-2">
-            <h1 class="text-xl font-bold mb-4">Your daily Contributions</h1>
-            <div class="w-full bg-white mx-auto p-2 border-2 border-mainColor rounded-lg">
-                <div id="data" data-message="{{ user_history }}"></div>
+            <h1 class="text-xl font-bold mb-4 text-mainColor">Your daily Contributions</h1>
+            <div class="w-full bg-mainGrey mx-auto p-2 border-2 border-mainColor rounded-lg">
+                <div id="data" data-json='{{ user_history | tojson | safe }}'></div>
                 <canvas id="myChart"></canvas>
             </div>
         </div>
 
         <!-- score of every single category -->
         <div class="bg-white rounded-lg p-2 flex flex-col justify-start shadow gap-2">
-            <h1 class="text-xl font-bold mb-4 text-center">Your Categories Score</h1>
+            <h1 class="text-xl font-bold mb-4 text-center text-mainColor">Your Categories Score</h1>
             {% for category in user_categories_score %}
             <div class="flex flex-row justify-between items-center p-1">
                 <h3 class="m-2">{{ category.category_name }}</h3>
@@ -78,7 +78,7 @@
 
         <!-- users rank -->
         <div class="bg-white rounded-lg p-2 flex flex-col justify-start shadow gap-2">
-            <h1 class="text-xl font-bold mb-4 text-center">Rank of Top 10</h1>
+            <h1 class="text-xl font-bold mb-4 text-center text-mainColor">Rank of Top 10</h1>
             <div class="overflow-y-auto max-h-[420px]">
                 {% for rank in ranks %}
                 <div class="flex flex-row justify-between items-center p-1">

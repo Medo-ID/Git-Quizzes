@@ -1,5 +1,4 @@
 import os
-import requests
 
 from flask import Flask, flash, url_for, abort, redirect, render_template, request, session
 from cs50 import SQL
@@ -403,6 +402,7 @@ def profile():
     # get current user infos
     userinfo = db.execute("SELECT * FROM users WHERE id = ?", session["user_id"])
     answer_statistics = db.execute("SELECT * from user_answers_statistics WHERE user_id = ?", session["user_id"])
+    user_history = db.execute("SELECT * FROM user_history WHERE user_id = ?", session["user_id"])
     
     # user reached route via POST
     if request.method == "POST":
@@ -499,7 +499,7 @@ def profile():
     # user reached route via GET
     else:
         # render user's profile
-        return render_template('profile.html', userinfo=userinfo[0], answer_statistics=answer_statistics[0])
+        return render_template('profile.html', userinfo=userinfo[0], answer_statistics=answer_statistics[0], user_history= user_history)
 
 
 
