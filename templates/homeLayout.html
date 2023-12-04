@@ -11,7 +11,7 @@
 <body class="xl:mx-20 2xl:mx-72 bg-mainGrey text-mainBlack">
 
     <!-- navbar -->
-    <nav class="bg-secondayColor text-mainGrey relative px-6 py-4 flex justify-between items-center my-4 rounded-3xl">
+    <nav class="bg-secondayColor text-mainGrey relative px-6 py-4 flex justify-between items-center my-4 shadow rounded-xl">
         <a class="text-3xl font-bold leading-none" href="/">
             <h1 class="font-extrabold text-2xl">Git-Quizzes</h1>
         </a>
@@ -50,11 +50,58 @@
             </div>
         </nav>
     </div>
-    
+    {% with message = get_flashed_messages() %}
+        {% if message %}
+            <!-- info message -->
+            <div 
+                id="message-info"
+                class="bg-clearMainColor border border-mainColor rounded-xl text-yellow-800 text-sm p-4 flex justify-between"
+            >
+                <div>
+                    <div class="flex items-center">
+                        <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-4 w-4 mr-2"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        >
+                        <path
+                            fill-rule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                            clip-rule="evenodd"
+                        />
+                        </svg>
+                        <p class="font-semibold text-lg">
+                        <span class="font-bold text-lg">Info:</span>
+                        {{ message | join(" ") }}
+                        </p>
+                    </div>
+                </div>
+                <button id="closeButton">
+                    <div>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-6 w-6"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12"
+                            />
+                        </svg>
+                    </div>
+                </button>
+            </div>
+        {% endif %}
+    {% endwith %}
     {% block main %}{% endblock %}
     
     <!-- Footer -->
-    <section class="bg-secondayColor rounded-3xl my-5">
+    <section class="bg-secondayColor shadow rounded-xl my-5">
         <div class="max-w-screen-xl px-4 py-12 mx-auto space-y-8 overflow-hidden sm:px-6 lg:px-8">
             <div class="flex justify-center mt-8 space-x-6">
                 <a href="https://www.instagram.com/medo_idaghdour7/">

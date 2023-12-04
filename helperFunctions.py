@@ -53,6 +53,7 @@ def getQuestions(category_id, difficulty):
         return jsonify({'error': str(error)}), 500
 
 def is_valid_image_url(url):
+    """check if image is valid or not"""
     # info message
     message = ''
     
