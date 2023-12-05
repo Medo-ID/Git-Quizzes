@@ -18,9 +18,14 @@ def login_required(f):
 
 def getQuestions(category_id, difficulty):
     """Get question data from trevia endpoint api."""
+    # initiate the id of the questions
     number = 1
+
+    # array for storing the 10 questions
     questions_data = []
-    url =f"https://opentdb.com/api.php?amount=10&category={category_id}&difficulty={difficulty}&type=multiple"
+
+    # the url endpoint api
+    url = f"https://opentdb.com/api.php?amount=10&category={category_id}&difficulty={difficulty}&type=multiple"
     
     try:
         # Make a GET request to the trivia API

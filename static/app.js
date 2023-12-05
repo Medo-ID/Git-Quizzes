@@ -77,7 +77,7 @@ const timestampCounts = countUniqueTimestamps(appData);
 // date settings
 function isoDaysOfWeek(dt) {
     let weekdays = dt.getDay(); // 0 to 6, where 0 is Sunday
-    weekdays = (weekdays + 7) % 7 + 1; // 1 to 7 starting from Sunday
+    // weekdays = (weekdays + 7) % 7 + 1; // 1 to 7 starting from Sunday
     return '' + weekdays;
 }
 
@@ -91,13 +91,13 @@ function generateDays() {
 
     while (dt <= today) {
         const iso = dt.toISOString().substr(0, 10);
-        const countForDate = timestampCounts[iso] || 0;
+        // const countForDate = timestampCounts[iso] || 0;
 
         data_user.push({
             x: iso,
             y: isoDaysOfWeek(dt),
             d: iso,
-            v: countForDate
+            v: Math.round(Math.random() * 7)
         });
 
         dt.setDate(dt.getDate() + 1);
@@ -115,7 +115,7 @@ const data = {
         backgroundColor(d){
             const value = d.dataset.data[d.dataIndex].v;
             if (value == 0){
-                return 'rgb(234, 234, 234)';
+                return 'rgb(255, 255, 255)';
             } else if (value == 1 || value == 2){
                 return 'rgb(238, 108, 77, 0.3)'
             } else if (value == 3 || value == 4){
@@ -150,18 +150,18 @@ const scales = {
         time: {
             unit: 'day',
             round: 'day',
-            isoWeek: 1,
             parser: 'i',
-            displayFormats: {
-                day: 'iii'
-            }
         },
-        reverse: true,
+        reverse: true, // Set reverse to true to display Sunday at the bottom
         position: 'left',
         ticks: {
+            callback: function (value, index, values) {
+                // Custom tick labels, order from Saturday to Sunday
+                const daysOfWeek = ['Sat', 'Fri', 'Thu', 'Wed', 'Tue', 'Mon', 'Sun'];
+                return daysOfWeek[index];
+            },
             maxRotation: 0,
             autoSkip: true,
-            padding: 1,
             font: {
                 size: 9
             }
@@ -179,7 +179,6 @@ const scales = {
         time: {
             unit: 'week',
             round: 'week',
-            isoWeekDay: 0,
             displayFormats: {
                 week: 'MMM'
             }

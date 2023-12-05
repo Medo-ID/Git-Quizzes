@@ -130,8 +130,8 @@ Welcome to Git-Quizzes! This project was created for the purpose of helping peop
     - From werkzeug.security I used: check_password_hash, generate_password_hash
     - From authlib.integrations.flask_client I used: OAuth
     - From functools I used: wraps
-    - from PIL I used: Image
-    - from io I used: BytesIO
+    - From PIL I used: Image
+    - From io I used: BytesIO
 
 ## And This Was CS50 - 🫡👌
 

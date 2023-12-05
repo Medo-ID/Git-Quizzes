@@ -8,7 +8,7 @@ from authlib.integrations.flask_client import OAuth
 from helperFunctions import login_required, getQuestions, is_valid_image_url
 
 # Configure application
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 # Configure session to use signed cookies
 app.config["SECRET_KEY"] = 'c6607322-a125-435b-8336-4b480e91eace'
@@ -45,8 +45,10 @@ categories = [{'name':'Books', 'id': 10}, {'name': 'Computers', 'id': 18},{'name
 
 @app.route('/')
 def index():
+    # if there is a user render the dashboard
     if "user_id" in session:
         return redirect('/dashboard')
+    # else render the home page
     else:
         return render_template('index.html')
 
@@ -234,12 +236,23 @@ def logout():
 def dashboard():
     """User Dashboard"""
     
+    # get user's personal informations
     userinfo = db.execute("SELECT * FROM users WHERE id = ?", session["user_id"])
+    
+    # get user's correct answers and incorrect answers
     answer_statistics = db.execute("SELECT * from user_answers_statistics WHERE user_id = ?", session["user_id"])
+    
+    # get categories score
     user_categories_score = db.execute("SELECT * FROM categories_score WHERE user_id = ?", session["user_id"])
+    
+    # get the ranks of the users
     ranks = db.execute("SELECT * FROM users ORDER BY overall_score DESC LIMIT 10")
+    
+    # get the user's history
     user_history = db.execute("SELECT * FROM user_history WHERE user_id = ?", session["user_id"])
     
+    
+    # render the propre html with all of above data
     return render_template('dashboard.html', userinfo=userinfo[0], answer_statistics=answer_statistics[0], user_categories_score=user_categories_score, ranks=ranks, user_history=user_history)
 
 
@@ -312,7 +325,11 @@ def quiz():
             # colect and store user's answers
             for n in range(1,11):
                 id = f'qus{n}'
-                user_answers.append(request.form.get(id))
+                if request.form.get(id):
+                    user_answers.append(request.form.get(id))
+                else:
+                    flash("Make sure you answer all the questions before you submit! - Try Again")
+                    return redirect('/quiz')
             
             # compare user's answer with correct answers
             for n in range(10):
@@ -358,7 +375,7 @@ def quiz():
 
             # finaly update the overall score
             # need to get first the avg score of all category with value greate than 0.0
-            avg_score_categories = db.execute("SELECT * FROM categories_score WHERE user_id = ? AND avg_score > 0.0",
+            avg_score_categories = db.execute("SELECT * FROM categories_score WHERE user_id = ? AND attempts > 0",
                 session["user_id"]
             )
 

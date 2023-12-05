@@ -10,7 +10,7 @@
         <div class="grid grid-cols-1 lg:col-span-1 gap-8">
             <div class="flex flex-col justify-center items-center bg-white shadow p-4 rounded-lg gap-5">
                 <h1 class="text-base text-mainColor font-extrabold mb-4">Your profile infos</h1>
-                <div class="h-20 w-20 rounded-full border-2 border-mainColor">
+                <div class="h-20 w-20 rounded-full border-2 border-mainColor overflow-hidden">
                     <img class="w-full rounded-full" src="{{ userinfo.image }}" alt="user's profile picture">
                 </div>
                 <h3 class="text-mainBlack">{{ userinfo.username }}</h3>
@@ -19,7 +19,7 @@
             </div>
             <div class="flex flex-col justify-center items-center bg-white shadow p-4 rounded-lg gap-5">
                 <h1 class="text-base text-mainColor font-extrabold mb-4">Your stats</h1>
-                <h3>Over all score: <span class="ml-4">{{ userinfo.overall_score }}</span></h3>
+                <h3>Over all score: <span class="ml-4">{{ "%.2f"|format(userinfo.overall_score|round(2)) }}</span></h3>
                 <h3>Correct Answers: <span class="ml-4">{{ answer_statistics.correct_answers }}</span></h3>
                 <h3>Wrong Answers: <span class="ml-4">{{ answer_statistics.incorrect_answers }}</span></h3>
             </div>
