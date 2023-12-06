@@ -56,9 +56,9 @@
         </div>
         
         <!-- user's daily contrubitions -->
-        <div class="md:col-span-2 lg:col-span-2 bg-white rounded-lg p-2 flex flex-col justify-start text-center shadow gap-2">
-            <h1 class="text-xl font-bold mb-4 text-mainColor">Your daily Contributions</h1>
-            <div class="w-full bg-mainGrey mx-auto p-2 border-2 border-mainColor rounded-lg">
+        <div class="md:col-span-2 lg:col-span-2 bg-white rounded-lg p-2 flex flex-col justify-start text-center shadow gap-2 overflow-x-scroll md:overflow-auto">
+            <h1 class="text-xl font-bold mb-4 text-mainColor">Your daily activity over the year</h1>
+            <div class="w-[800px] md:w-full bg-mainGrey mx-auto p-2 border-2 border-mainColor rounded-lg">
                 <div id="data" data-json='{{ user_history | tojson | safe }}'></div>
                 <canvas id="myChart"></canvas>
             </div>

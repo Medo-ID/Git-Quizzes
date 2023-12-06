@@ -844,6 +844,10 @@ html {
   width: 100%;
 }
 
+.w-\[800px\]{
+  width: 800px;
+}
+
 .max-w-5xl{
   max-width: 64rem;
 }
@@ -1014,8 +1018,20 @@ html {
   overflow: hidden;
 }
 
+.overflow-scroll{
+  overflow: scroll;
+}
+
+.overflow-x-auto{
+  overflow-x: auto;
+}
+
 .overflow-y-auto{
   overflow-y: auto;
+}
+
+.overflow-x-scroll{
+  overflow-x: scroll;
 }
 
 .rounded{
@@ -1596,11 +1612,6 @@ html {
   background-color: rgb(238 108 77 / var(--tw-bg-opacity));
 }
 
-.active\:text-mainColor:active{
-  --tw-text-opacity: 1;
-  color: rgb(238 108 77 / var(--tw-text-opacity));
-}
-
 .group[open] .group-open\:opacity-0{
   opacity: 0;
 }
@@ -1663,6 +1674,10 @@ html {
     --tw-space-y-reverse: 0;
     margin-top: calc(2rem * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(2rem * var(--tw-space-y-reverse));
+  }
+
+  .sm\:overflow-x-scroll{
+    overflow-x: scroll;
   }
 
   .sm\:p-12{
@@ -1786,6 +1801,10 @@ html {
     width: 50%;
   }
 
+  .md\:w-full{
+    width: 100%;
+  }
+
   .md\:grid-cols-2{
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1796,6 +1815,14 @@ html {
 
   .md\:flex-row{
     flex-direction: row;
+  }
+
+  .md\:overflow-auto{
+    overflow: auto;
+  }
+
+  .md\:overflow-x-scroll{
+    overflow-x: scroll;
   }
 }
 
@@ -1842,6 +1869,10 @@ html {
     width: auto;
   }
 
+  .lg\:w-full{
+    width: 100%;
+  }
+
   .lg\:grid-cols-3{
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -1860,6 +1891,10 @@ html {
     margin-left: calc(1.5rem * calc(1 - var(--tw-space-x-reverse)));
   }
 
+  .lg\:overflow-x-scroll{
+    overflow-x: scroll;
+  }
+
   .lg\:px-8{
     padding-left: 2rem;
     padding-right: 2rem;
@@ -1870,6 +1905,14 @@ html {
   .xl\:mx-20{
     margin-left: 5rem;
     margin-right: 5rem;
+  }
+
+  .xl\:w-full{
+    width: 100%;
+  }
+
+  .xl\:overflow-auto{
+    overflow: auto;
   }
 
   .xl\:text-3xl{

@@ -8,6 +8,12 @@
     <!-- Favicon -->
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     <title>Git Quizzes: {% block title %}{% endblock %}</title>
+    <style>
+        .scroll-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch; /* Enables smooth scrolling on iOS devices */
+        }
+    </style>
 </head>
 <body class="max-h-fit mx-4 xl:mx-20 2xl:mx-52 bg-mainGrey text-mainBlack">
     <!-- navbar -->

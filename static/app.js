@@ -77,7 +77,7 @@ const timestampCounts = countUniqueTimestamps(appData);
 // date settings
 function isoDaysOfWeek(dt) {
     let weekdays = dt.getDay(); // 0 to 6, where 0 is Sunday
-    // weekdays = (weekdays + 7) % 7 + 1; // 1 to 7 starting from Sunday
+    weekdays = (weekdays + 7) % 7 + 1; // 1 to 7 starting from Sunday
     return '' + weekdays;
 }
 
@@ -91,13 +91,13 @@ function generateDays() {
 
     while (dt <= today) {
         const iso = dt.toISOString().substr(0, 10);
-        // const countForDate = timestampCounts[iso] || 0;
+        const countForDate = timestampCounts[iso] || 0;
 
         data_user.push({
             x: iso,
             y: isoDaysOfWeek(dt),
             d: iso,
-            v: Math.round(Math.random() * 7)
+            v: countForDate
         });
 
         dt.setDate(dt.getDate() + 1);

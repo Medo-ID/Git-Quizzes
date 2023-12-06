@@ -51,9 +51,9 @@
                     <button type="submit" class="w-full text-base mx-auto md:ml-2 font-semibold text-white bg-mainColor my-2 px-4 py-2 rounded-lg sm:max-w-xs sm:text-sm sm:leading-6">Update Profile</button>
                 </form>
             </div>
-            <div class="col-span-2 bg-white shadow p-4 rounded-lg">
-                <h1 class="text-base text-mainColor font-extrabold mb-4 text-center">Your daily activity stats</h1>
-                <div class="w-full bg-mainGrey mx-auto p-2 border-2 border-mainColor rounded-lg">
+            <div class="col-span-2 bg-white shadow p-4 rounded-lg overflow-x-scroll xl:overflow-auto">
+                <h1 class="text-base text-mainColor font-extrabold mb-4 text-center">Your daily activity over the year</h1>
+                <div class="w-[800px] lg:w-full bg-mainGrey mx-auto p-2 border-2 border-mainColor rounded-lg">
                     <div id="data" data-json='{{ user_history | tojson | safe }}'></div>
                     <canvas id="myChart"></canvas>
                 </div>
