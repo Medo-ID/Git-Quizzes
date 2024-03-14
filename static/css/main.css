@@ -840,12 +840,12 @@ html {
   width: 1.5rem;
 }
 
-.w-full{
-  width: 100%;
-}
-
 .w-\[800px\]{
   width: 800px;
+}
+
+.w-full{
+  width: 100%;
 }
 
 .max-w-5xl{
@@ -1016,14 +1016,6 @@ html {
 
 .overflow-hidden{
   overflow: hidden;
-}
-
-.overflow-scroll{
-  overflow: scroll;
-}
-
-.overflow-x-auto{
-  overflow-x: auto;
 }
 
 .overflow-y-auto{
@@ -1676,10 +1668,6 @@ html {
     margin-bottom: calc(2rem * var(--tw-space-y-reverse));
   }
 
-  .sm\:overflow-x-scroll{
-    overflow-x: scroll;
-  }
-
   .sm\:p-12{
     padding: 3rem;
   }
@@ -1820,10 +1808,6 @@ html {
   .md\:overflow-auto{
     overflow: auto;
   }
-
-  .md\:overflow-x-scroll{
-    overflow-x: scroll;
-  }
 }
 
 @media (min-width: 1024px){
@@ -1891,10 +1875,6 @@ html {
     margin-left: calc(1.5rem * calc(1 - var(--tw-space-x-reverse)));
   }
 
-  .lg\:overflow-x-scroll{
-    overflow-x: scroll;
-  }
-
   .lg\:px-8{
     padding-left: 2rem;
     padding-right: 2rem;
@@ -1905,10 +1885,6 @@ html {
   .xl\:mx-20{
     margin-left: 5rem;
     margin-right: 5rem;
-  }
-
-  .xl\:w-full{
-    width: 100%;
   }
 
   .xl\:overflow-auto{

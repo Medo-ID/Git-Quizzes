@@ -6,3 +6,4 @@ venv/
 gitquizzesdb.db
 gitquizzes.db
 .env
+.vercel
